@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .center {
+      width: 80em;
+      height: auto;
+      margin-top: 5em;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+   
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+  <div class="center">
+    <div id="chart" style="width:auto; height:600px;"></div> 
+  </div>
+</body>
+
+<script>
+  // Visualization API with the Line chart package
+  google.charts.load('current', { packages: ['line'] });
+  google.charts.setOnLoadCallback(drawLineChart);
+
+  function drawLineChart() {
+    $.ajax({
+      url: "data/sample2.json",
+      dataType: "json",
+      type: "GET",
+      contentType: "application/json; charset=utf-8",
+      success: function (data) {
+        // Chart columns
+        var arrStock = [['Month', 'USD']]; 
+
+        // Loop through each in data and populate the array.
+        $.each(data, function (index, value) {
+            arrStock.push([value.Month, value.Value]);
+        });
+
+        // Set chart options
+        var options = {
+          chart: {
+            title: 'Facebook, Inc. Common Stock',
+            subtitle: '2020'
+          },
+          axes: {
+            x: {
+              0: { side: 'bottom'}   // Use "top" or "bottom".
+            }
+          }
+        };
+
+        // Create DataTable and add the array to it
+        var figures = google.visualization.arrayToDataTable(arrStock)
+
+        // Define the chart type (LineChart) and container.
+        var chart = new google.charts.Line(document.getElementById('chart'))
+
+        // Draw the chart with options
+        chart.draw(figures, google.charts.Line.convertOptions(options));
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        alert('Got an Error');
+      }
+    });
+  }
+</script>
+</html>
